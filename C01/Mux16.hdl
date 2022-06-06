@@ -15,4 +15,10 @@ CHIP Mux16 {
 
     PARTS:
     // Put your code here:
+    Not16Broadcast(in=sel,out=notsel16);
+    Not16(in=notsel16, out=sel16);
+
+    And16(a=a,b=notsel16,out=v1);
+    And16(a=b,b=sel16,out=v2);
+    Or16(a=v1,b=v2,out=out);
 }
