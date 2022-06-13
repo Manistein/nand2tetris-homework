@@ -14,4 +14,23 @@ CHIP Inc16 {
 
     PARTS:
    // Put you code here:
+   Xor(a=in[0], b=in[0], out=zero);
+   Not(in=zero, out=one);
+
+   FullAdder(a=in[0],  b=one,  c=zero, 	  sum=out[0],  carry=vcarry0);
+   FullAdder(a=in[1],  b=zero, c=vcarry0, sum=out[1],  carry=vcarry1);
+   FullAdder(a=in[2],  b=zero, c=vcarry1, sum=out[2],  carry=vcarry2);
+   FullAdder(a=in[3],  b=zero, c=vcarry2, sum=out[3],  carry=vcarry3);
+   FullAdder(a=in[4],  b=zero, c=vcarry3, sum=out[4],  carry=vcarry4);
+   FullAdder(a=in[5],  b=zero, c=vcarry4, sum=out[5],  carry=vcarry5);
+   FullAdder(a=in[6],  b=zero, c=vcarry5, sum=out[6],  carry=vcarry6);
+   FullAdder(a=in[7],  b=zero, c=vcarry6, sum=out[7],  carry=vcarry7);
+   FullAdder(a=in[8],  b=zero, c=vcarry7, sum=out[8],  carry=vcarry8);
+   FullAdder(a=in[9],  b=zero, c=vcarry8, sum=out[9],  carry=vcarry9);
+   FullAdder(a=in[10], b=zero, c=vcarry9, sum=out[10], carry=vcarry10);
+   FullAdder(a=in[11], b=zero, c=vcarry10, sum=out[11], carry=vcarry11);
+   FullAdder(a=in[12], b=zero, c=vcarry11, sum=out[12], carry=vcarry12);
+   FullAdder(a=in[13], b=zero, c=vcarry12, sum=out[13], carry=vcarry13);
+   FullAdder(a=in[14], b=zero, c=vcarry13, sum=out[14], carry=vcarry14);
+   FullAdder(a=in[15], b=zero, c=vcarry14, sum=out[15], carry=vcarry15);  
 }
