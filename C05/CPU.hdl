@@ -49,6 +49,7 @@ CHIP CPU {
         f  = instruction[7],
         no = instruction[6],
         out = aluOut,
+        out = outM, 
         zr = zrOut,
         ng = ngOut);
 
@@ -58,42 +59,15 @@ CHIP CPU {
     Or(a = notLeftmostBit, b = instruction[5], out = loadAddress);
 
     // address register
-    Register(in = registerIn, load = loadAddress, out[0..14] = addressM, out = addressRegisterIn, out = jmpAddress);
+    ARegister(in = registerIn, load = loadAddress, out[0..14] = addressM, out = addressRegisterIn, out = jmpAddress);
 
     // data register
     And(a = instruction[15], b = instruction[4], out = loadData);
-    Register(in = registerIn, load = loadData, out = outM, out = xOut, out[15] = dSignificant, out[0..7] = dLowBits, out[8..15] = dHighBits);
+    DRegister(in = registerIn, load = loadData, out = xOut);
 
     And(a = instruction[15], b= instruction[3], out = canWriteM);
     Mux(a = false, b = true, sel = canWriteM, out = writeM);
 
-    PC(in = loop, load = false, reset = reset, inc = true, out = loop, out = jmpPC);
 
-    Or8Way(in = dLowBits, out = lowBits);
-    Or8Way(in = dHighBits, out = highBits);
-    Or(a = lowBits, b = highBits, out = zeroCheck);
-
-    // > 0; jump
-    Mux16(a = jmpAddress, b = jmpPC, sel = dSignificant, out = greater);
-    Mux16(a = jmpPC, b = greater, sel = zeroCheck, out = greaterOut);
-
-    // == 0; jump
-    Mux16(a = jmpAddress, b = jmpPC, sel = zeroCheck, out = equalOut);
-
-    // >= 0; jump
-    Mux16(a = jmpAddress, b= jmpPC, sel = dSignificant, out = geOut);
-
-    // < 0; jump
-    Mux16(a = jmpPC, b = jmpAddress, sel = dSignificant, out = lessOut);
-
-    // != 0; jump
-    Mux16(a = jmpPC, b = jmpAddress, sel = zeroCheck, out = neOut);
-
-    // <= 0; jump
-    Mux16(a = jmpPC, b = jmpAddress, sel = dSignificant, out = lesser);
-    Mux16(a = jmpAddress, b = lesser, sel = zeroCheck, out = leOut);
-
-    Mux8Way16(a = jmpPC, b = greaterOut, c = equalOut, d = geOut, e = lessOut, f = neOut, g = leOut, h = jmpAddress, sel = instruction[0..2], out = pcOut); 
-
-    Mux16(a = jmpPC, b = pcOut, sel = instruction[15], out[0..14] = pc);
+    PC(in = jmpAddress, load = false, reset = reset, inc = true, out = pc);
 }
