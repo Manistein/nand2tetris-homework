@@ -59,7 +59,7 @@ CHIP CPU {
     Or(a = notLeftmostBit, b = instruction[5], out = loadAddress);
 
     // address register
-    ARegister(in = registerIn, load = loadAddress, out[0..14] = addressM, out = addressRegisterIn, out = jmpAddress);
+    ARegister(in = registerIn, load = loadAddress, out[0..14] = addressM, out = addressRegisterIn);
 
     // data register
     And(a = instruction[15], b = instruction[4], out = loadData);
@@ -69,5 +69,36 @@ CHIP CPU {
     Mux(a = false, b = true, sel = canWriteM, out = writeM);
 
 
-    PC(in = jmpAddress, load = false, reset = reset, inc = true, out = pc);
+    // > 0; jump
+    Mux(a = true, b = false, sel = ngOut, out = greater);
+    Mux(a = greater, b = false, sel = zrOut, out = greaterOut);
+
+    // == 0; jump
+    Mux(a = false, b = true, sel = zrOut, out = equalOut);
+
+    // >= 0; jump
+    Mux(a = true, b= false, sel = ngOut, out = geOut);
+
+    // < 0; jump
+    Mux(a = false, b = true, sel = ngOut, out = lessOut);
+
+    // != 0; jump
+    Mux(a = true, b = false, sel = zrOut, out = neOut);
+
+    // <= 0; jump
+    Mux(a = false, b = true, sel = ngOut, out = lesser);
+    Mux(a = lesser, b = false, sel = zrOut, out = leOut);
+
+    Mux(a=false,b=true,sel=instruction[2],out=v1);
+    Mux(a=greaterOut,b=leOut,sel=instruction[2],out=v2);
+    Mux(a=equalOut,b=neOut,sel=instruction[2],out=v3);
+    Mux(a=geOut,b=lessOut,sel=instruction[2],out=v4);
+
+    Mux(a=v1,b=v3,sel=instruction[1],out=r1);
+    Mux(a=v2,b=v4,sel=instruction[1],out=r2);
+
+    Mux(a=r1,b=r2,sel=instruction[0],out=o1);
+    Mux(a=false,b=o1,sel=instruction[15],out=loadPC);
+
+    PC(in = addressRegisterIn, load = loadPC, reset = reset, inc = true, out[0..14] = pc);
 }
