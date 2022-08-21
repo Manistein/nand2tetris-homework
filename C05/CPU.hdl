@@ -87,12 +87,12 @@ CHIP CPU {
 
     // <= 0; jump
     Mux(a = false, b = true, sel = ngOut, out = lesser);
-    Mux(a = lesser, b = false, sel = zrOut, out = leOut);
+    Mux(a = lesser, b = true, sel = zrOut, out = leOut);
 
-    Mux(a=false,b=true,sel=instruction[2],out=v1);
-    Mux(a=greaterOut,b=leOut,sel=instruction[2],out=v2);
-    Mux(a=equalOut,b=neOut,sel=instruction[2],out=v3);
-    Mux(a=geOut,b=lessOut,sel=instruction[2],out=v4);
+    Mux(a=false,b=lessOut,sel=instruction[2],out=v1);
+    Mux(a=greaterOut,b=neOut,sel=instruction[2],out=v2);
+    Mux(a=equalOut,b=leOut,sel=instruction[2],out=v3);
+    Mux(a=geOut,b=true,sel=instruction[2],out=v4);
 
     Mux(a=v1,b=v3,sel=instruction[1],out=r1);
     Mux(a=v2,b=v4,sel=instruction[1],out=r2);
